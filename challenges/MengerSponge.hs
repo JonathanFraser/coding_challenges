@@ -7,12 +7,6 @@ import Control.Monad (unless)
 import Graphics.Rendering.OpenGL
 import Graphics.Rendering.OpenGL.GLU.Matrix
 
-n = 32
-
-myPoints :: [(GLfloat,GLfloat,GLfloat)]
-myPoints = [ (0.5*sin (-2*pi*k/n), 0.5*cos (-2*pi*k/n),0.25*sin(2*pi*k/n*3)) | k <- [1..n]]
-
-
 main = do 
     SDL.version >>=print 
     SDL.initializeAll
@@ -31,28 +25,6 @@ main = do
     SDL.glDeleteContext ctx
     SDL.destroyWindow window
     SDL.quit
-
-cubetriangles :: [(GLfloat,GLfloat,GLfloat)]
-cubetriangles = [
-    (-1.0, 1.0, 1.0),     -- Front-top-left
-    (1.0, 1.0, 1.0),      -- Front-top-right
-    (-1.0, -1.0, 1.0),    -- Front-bottom-left
-    (1.0, -1.0, 1.0),     -- Front-bottom-right
-    (1.0, -1.0, -1.0),    -- Back-bottom-right
-    (1.0, 1.0, 1.0),      -- Front-top-right
-    (1.0, 1.0, -1.0),     -- Back-top-right
-    (-1.0, 1.0, 1.0),     -- Front-top-left
-    (-1.0, 1.0, -1.0),    -- Back-top-left
-    (-1.0, -1.0, 1.0),    -- Front-bottom-left
-    (-1.0, -1.0, -1.0),   -- Back-bottom-left
-    (1.0, -1.0, -1.0),    -- Back-bottom-right
-    (-1.0, 1.0, -1.0),    -- Back-top-left
-    (1.0, 1.0, -1.0)]     -- Back-top-right
- 
-stripvertex :: (GLfloat,GLfloat,GLfloat) -> IO ()
-stripvertex (x,y,z) = do 
-        normal $ Normal3 (-x) (-y) (-z) 
-        vertex $ Vertex3 x y z
 
 square :: IO ()
 square = renderPrimitive TriangleStrip $ do
@@ -82,10 +54,6 @@ cube  = preservingMatrix $ do
             color (Color3 0.0157 0.3765 (1.00::GLfloat)) --blue
             square
 
-
---cube :: IO ()
---cube = renderPrimitive TriangleStrip $ mapM_  stripvertex cubetriangles
-
 menger :: [(GLfloat,GLfloat,GLfloat)]
 menger = [
     (2,2,0),
@@ -108,17 +76,6 @@ menger = [
     (-2,0,2),
     (-2,2,2),
     (0,2,2)]
-
-menger2 :: [(GLfloat,GLfloat,GLfloat)]
-menger2 = [
-    (2,2,2),
-    (2,2,-2),
-    (2,-2,2),
-    (2,-2,-2),
-    (-2,2,2),
-    (-2,2,-2),
-    (-2,-2,2),
-    (-2,-2,-2)]
 
 renderMenger 0 = cube
 renderMenger n = preservingMatrix $ do 
