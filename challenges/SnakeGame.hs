@@ -11,10 +11,7 @@ blocksHigh = 40
 width =  (blocksWide*blockSize)
 height =  (blocksHigh*blockSize)
 
-
-
 data Block = Block (Int,Int) deriving (Eq,Ord)
-
 
 data Snake = Snake [Block]
 data Target = Target Block
@@ -65,6 +62,14 @@ tickState (State snk d tgt) = if collide snk d tgt then
                         else 
                             return $ State (moveSnake snk (next d snk)) d tgt 
 
+
+eventState :: Event -> State -> IO State 
+eventState (EventKey (SpecialKey KeyDown) Down  _ _) (State snk dir tgt) = return $ State snk DirDown tgt 
+eventState (EventKey (SpecialKey KeyUp) Down  _ _) (State snk dir tgt) = return $ State snk DirUp tgt
+eventState (EventKey (SpecialKey KeyLeft) Down  _ _) (State snk dir tgt) = return $ State snk DirLeft tgt
+eventState (EventKey (SpecialKey KeyRight) Down  _ _) (State snk dir tgt) = return $ State snk DirRight tgt
+eventState _ s = return $ s 
+
 outOfBounds :: Block -> Bool 
 outOfBounds (Block (a,b)) = a<0 || b<0 || a >= blocksWide || b >= blocksHigh
 
@@ -92,5 +97,5 @@ disp = InWindow "Snake Game" (width,height) (10,10)
 main :: IO ()
 main = do 
     st <- newState
-    playIO disp black 5 st (return.drawState) (\_ g -> return g) (\ _ s -> tickState s)
+    playIO disp black 5 st (return.drawState) eventState (\ _ s -> tickState s)
                                
