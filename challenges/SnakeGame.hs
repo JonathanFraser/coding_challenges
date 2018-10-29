@@ -35,6 +35,9 @@ growSnake (Snake blks) next = Snake (next:blks)
 moveSnake :: Snake -> Block -> Snake 
 moveSnake (Snake blks) next = Snake (next:(init blks))
 
+selfCollide :: Snake -> Dir -> Bool 
+selfCollide (Snake blks) d = elem (next d (Snake blks)) blks 
+
 collide :: Snake -> Dir -> Target -> Bool
 collide snk dir (Target tgt) = tgt == next dir snk 
 
@@ -89,7 +92,7 @@ drawTarget :: Target -> Picture
 drawTarget (Target blk) = color red $ drawBlock blk 
 
 drawState :: State -> Picture 
-drawState (State snk _ tgt) = translate (-(fromIntegral width)/2) (-(fromIntegral height)/2) $ pictures [drawSnake snk,drawTarget tgt]
+drawState (State snk _ tgt) = translate (-(fromIntegral width)/2 + 5) (-(fromIntegral height)/2 + 5) $ pictures [drawSnake snk,drawTarget tgt]
 
 disp :: Display
 disp = InWindow "Snake Game" (width,height) (10,10)
@@ -97,5 +100,5 @@ disp = InWindow "Snake Game" (width,height) (10,10)
 main :: IO ()
 main = do 
     st <- newState
-    playIO disp black 5 st (return.drawState) eventState (\ _ s -> tickState s)
+    playIO disp black 10 st (return.drawState) eventState (\ _ s -> tickState s)
                                
