@@ -29,7 +29,9 @@ executable snake-game
   main-is:             SnakeGame.hs
   build-depends:       base,
                        gloss,
-                       random
+                       random,
+                       containers,
+                       MonadRandom
 
 
 executable barnsly-fern

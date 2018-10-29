@@ -1,13 +1,19 @@
 import Graphics.Gloss 
 import Graphics.Gloss.Interface.IO.Game
+import qualified Data.Set as Set 
+import qualified System.Random as Rand 
+import qualified Control.Monad.Random as MRand
 
 blockSize = 10 
 blocksWide = 40
 blocksHigh = 40
-width = blocksWide*blockSize
-height = blocksHigh*blockSize
 
-data Block = Block (Int,Int) deriving (Eq)
+width =  (blocksWide*blockSize)
+height =  (blocksHigh*blockSize)
+
+
+
+data Block = Block (Int,Int) deriving (Eq,Ord)
 
 
 data Snake = Snake [Block]
@@ -17,7 +23,8 @@ data Dir = DirUp | DirDown | DirLeft | DirRight
 data Game = Start | InPlay State | Victory | Loss 
 data State = State Snake Dir Target
 
-
+fullSet :: Set.Set Block 
+fullSet = Set.fromList [Block (x,y) | x <- [0..(blocksWide-1)], y <- [0..(blocksHigh-1)]]
 
 next :: Dir -> Snake -> Block 
 next DirUp (Snake blks) = Block (a,b+1) where Block (a,b) = head blks
@@ -35,7 +42,11 @@ collide :: Snake -> Dir -> Target -> Bool
 collide snk dir (Target tgt) = tgt == next dir snk 
 
 newBlock :: [Block] -> IO Block
-newBlock snk = return $ Block (10,20)
+newBlock snk = do 
+                let rem = Set.difference fullSet (Set.fromList snk)
+                let pts = zip (Set.toList rem) (repeat 1)
+                Rand.getStdRandom $ MRand.runRand (MRand.fromList pts) 
+
 
 newState :: IO State 
 newState = do 
@@ -73,7 +84,7 @@ drawTarget :: Target -> Picture
 drawTarget (Target blk) = color red $ drawBlock blk 
 
 drawState :: State -> Picture 
-drawState (State snk _ tgt) = pictures [drawSnake snk,drawTarget tgt]
+drawState (State snk _ tgt) = translate (-(fromIntegral width)/2) (-(fromIntegral height)/2) $ pictures [drawSnake snk,drawTarget tgt]
 
 disp :: Display
 disp = InWindow "Snake Game" (width,height) (10,10)
