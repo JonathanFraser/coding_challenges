@@ -33,3 +33,4 @@ instance At P where
 main = do 
         Chk.quickCheck (Chk.withMaxSuccess 1000 prop_contained)
         Chk.quickCheck (Chk.withMaxSuccess 1000 (prop_contained full full))
+        Chk.quickCheck (Chk.withMaxSuccess 1000 (\a b -> prop_contained a b [(0,0)]))
