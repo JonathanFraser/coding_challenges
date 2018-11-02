@@ -1,6 +1,6 @@
-module QuadTree (QuadTree(Nil),get,insert,Point,Rect,At(at),within) where 
+module QuadTree (QuadTree(Nil),get,insert,Point,Rect,At(at),within,toList,fromList) where 
 
-type Point =(Double,Double)
+type Point =(Float,Float)
 type Rect = (Point,Point) 
 
 class At a where 
@@ -44,6 +44,15 @@ get (Sub b a chld) rect = root ++ (concatMap sub chld)
 insert :: At a => a -> QuadTree a -> QuadTree a 
 insert v (Sub b a chld) = if within (at v) b then Sub b a (fmap (insert v) chld) else Sub b a chld
 insert v (Nil b) = if within (at v) b then Sub b v (fmap Nil $ fracture b) else Nil b
+
+toList :: QuadTree a -> [(Rect,a)]
+toList (Nil _) = []
+toList (Sub b a chld) = [(b,a)] ++ concatMap toList chld
+
+fromList :: At a => Rect -> [a] -> QuadTree a 
+fromList r pts = foldl (flip insert) (Nil r) pts 
+
+
 
 
 

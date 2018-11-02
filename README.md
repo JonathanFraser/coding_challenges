@@ -21,5 +21,6 @@ stack exec challenge-name
 5. space-invaders - play a game of space invaders (TODO)
 6. mitosis-simulation - show a mitosis (cell division) simulation (TODO)
 98. quadtree-part1 - initial tests of a quad tree implimentation
+99. quadtree-part2 - display quadtree pulls 
 108. barnsly-fern - display a barnsly fern fractal
 
