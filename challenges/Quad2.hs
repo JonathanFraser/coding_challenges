@@ -26,7 +26,7 @@ drawRect :: QT.Rect -> Picture
 drawRect ((x1,y1),(x2,y2)) = translate ((x1+x2)/2) ((y1+y2)/2) $ rectangleWire (x2-x1) (y2-y1)
 
 drawP :: P -> Picture 
-drawP (P (x,y)) = translate x y $ circleSolid 0.01
+drawP (P (x,y)) = translate x y $ circleSolid 1
 
 draw:: QT.Rect -> QT.Rect -> [P] -> Picture
 draw sel treebox pts = pictures [color white $ simple, color green $ sampled, color red $ drawRect sel]
@@ -38,13 +38,10 @@ draw sel treebox pts = pictures [color white $ simple, color green $ sampled, co
 disp :: Display
 disp = InWindow "Quad Tree 2" (400,400) (10,10)
 
-scale2screen :: Picture -> Picture 
-scale2screen p = scale (width/2) (height/2) p
-
-total = ((-1,1),(1,-1))
-sel = ((-0.5,0.5),(0.5,-0.5))
+total = ((-200,200),(200,-200))
+sel = ((-50,150),(150,-50))
 
 main :: IO ()
 main = do 
     pts <- scatterInit 5000 total
-    display disp black (scale2screen $ draw sel total pts)
+    display disp black (draw sel total pts)

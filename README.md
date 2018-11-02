@@ -22,5 +22,6 @@ stack exec challenge-name
 6. mitosis-simulation - show a mitosis (cell division) simulation (TODO)
 98. quadtree-part1 - initial tests of a quad tree implimentation
 99. quadtree-part2 - display quadtree pulls 
+100. quadtree-part3 - use quadtree for collision detection
 108. barnsly-fern - display a barnsly fern fractal
 
