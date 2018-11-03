@@ -16,9 +16,9 @@ data Block = Block (Int,Int) deriving (Eq,Ord)
 data Snake = Snake [Block]
 data Target = Target Block
 
+data Condition = Start | InPlay | Victory | Loss 
 data Dir = DirUp | DirDown | DirLeft | DirRight
-data Game = Start | InPlay State | Victory | Loss 
-data State = State Snake Dir Target
+data State = State Condition Snake Dir Target
 
 fullSet :: Set.Set Block 
 fullSet = Set.fromList [Block (x,y) | x <- [0..(blocksWide-1)], y <- [0..(blocksHigh-1)]]
@@ -52,35 +52,46 @@ newState :: IO State
 newState = do 
           let snk = Block (quot blocksWide 2,quot blocksHigh 2)
           tgt <- newBlock [snk]
-          return $ State (Snake [snk]) DirLeft (Target tgt) 
+          return $ State Start (Snake [snk]) DirLeft (Target tgt) 
 
 
 tickState :: State -> IO State 
-tickState (State snk d tgt) = if collide snk d tgt then 
+tickState (State InPlay snk d tgt) = if collide snk d tgt then 
                             do
                                 let bsnk = growSnake snk (next d snk)
                                 let (Snake blks) = bsnk
                                 tgt2 <- newBlock blks
-                                return $ State bsnk d (Target tgt2)
+                                return $ State InPlay bsnk d (Target tgt2)
                         else 
-                            return $ State (moveSnake snk (next d snk)) d tgt 
+                            if defeat snk d then
+                                return $ State Loss snk d tgt 
+                            else 
+                                if victory snk then 
+                                    return $ State Victory snk d tgt
+                                else 
+                                    return $ State InPlay (moveSnake snk (next d snk)) d tgt 
+tickState (State a snk d tgt) = return $ State a snk d tgt
+
 
 
 eventState :: Event -> State -> IO State 
-eventState (EventKey (SpecialKey KeyDown) Down  _ _) (State snk dir tgt) = return $ State snk DirDown tgt 
-eventState (EventKey (SpecialKey KeyUp) Down  _ _) (State snk dir tgt) = return $ State snk DirUp tgt
-eventState (EventKey (SpecialKey KeyLeft) Down  _ _) (State snk dir tgt) = return $ State snk DirLeft tgt
-eventState (EventKey (SpecialKey KeyRight) Down  _ _) (State snk dir tgt) = return $ State snk DirRight tgt
+eventState (EventKey (SpecialKey KeyDown) Down  _ _) (State InPlay snk dir tgt) = return $ State InPlay snk DirDown tgt 
+eventState (EventKey (SpecialKey KeyUp) Down  _ _) (State InPlay snk dir tgt) = return $ State InPlay snk DirUp tgt
+eventState (EventKey (SpecialKey KeyLeft) Down  _ _) (State InPlay snk dir tgt) = return $ State InPlay snk DirLeft tgt
+eventState (EventKey (SpecialKey KeyRight) Down  _ _) (State InPlay snk dir tgt) = return $ State InPlay snk DirRight tgt
+eventState (EventKey (SpecialKey KeyEnter) Down _ _) (State Start snk dir tgt) = return $ State InPlay snk dir tgt
+eventState (EventKey (SpecialKey KeyEnter) Down _ _) (State Victory snk dir tgt) = newState
+eventState (EventKey (SpecialKey KeyEnter) Down _ _) (State Loss snk dir tgt) = newState
 eventState _ s = return $ s 
 
 outOfBounds :: Block -> Bool 
 outOfBounds (Block (a,b)) = a<0 || b<0 || a >= blocksWide || b >= blocksHigh
 
 victory :: Snake -> Bool 
-victory (Snake blks) = blocksWide*blocksHigh == length blks
+victory (Snake blks)  = blocksWide*blocksHigh == length blks
 
-defeat :: Snake -> Bool 
-defeat (Snake blks) = outOfBounds $ head blks
+defeat :: Snake -> Dir -> Bool 
+defeat  (Snake blks) d = (outOfBounds $ head blks) || (selfCollide (Snake blks) d)
 
 drawBlock :: Block -> Picture
 drawBlock (Block (x,y)) = translate (fromIntegral (x*blockSize)) (fromIntegral (y*blockSize)) $ rectangleSolid  (fromIntegral blockSize) (fromIntegral blockSize) 
@@ -91,8 +102,25 @@ drawSnake (Snake blks) = color white $ pictures $ fmap drawBlock blks
 drawTarget :: Target -> Picture 
 drawTarget (Target blk) = color red $ drawBlock blk 
 
+
+drawBoard :: State -> Picture 
+drawBoard (State _ snk _ tgt) = translate (-(fromIntegral width)/2 + 5) (-(fromIntegral height)/2 + 5) $ pictures [drawSnake snk,drawTarget tgt]
+
+drawVictory :: Picture 
+drawVictory =  color green $ translate (-50) 0 $ color white $ scale 0.1 0.1 $ text "Victory!"
+
+drawDefeat :: Picture
+drawDefeat =  color red $ translate (-50) 0 $ color white $ scale 0.1 0.1 $ text "You Fail!"
+
+draw2start :: Picture 
+draw2start = translate (-50) 0 $ color white $ scale 0.1 0.1 $ text "Enter to Start"
+
 drawState :: State -> Picture 
-drawState (State snk _ tgt) = translate (-(fromIntegral width)/2 + 5) (-(fromIntegral height)/2 + 5) $ pictures [drawSnake snk,drawTarget tgt]
+drawState (State InPlay snk d tgt) = drawBoard (State InPlay snk d tgt)
+drawState (State Start _ _ _) = draw2start
+drawState (State Victory snk d tgt) = pictures [drawBoard (State Victory snk d tgt), drawVictory]
+drawState (State Loss snk d tgt) = pictures [drawBoard (State Loss snk d tgt), drawDefeat]
+
 
 disp :: Display
 disp = InWindow "Snake Game" (width,height) (10,10)
