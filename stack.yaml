@@ -37,8 +37,8 @@ packages:
 # Dependency packages to be pulled from upstream that are not in the resolver
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)
-# extra-deps: []
-
+extra-deps: 
+  - gloss-juicy-0.2.2@sha256:9b001284579fca311f8775442bf284bfde66791ae98098bd96b227af31e815b6
 # Override default flag values for local packages and extra-deps
 # flags: {}
 
