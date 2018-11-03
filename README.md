@@ -16,7 +16,7 @@ stack exec challenge-name
 
 1. star-field - displays a semi realistic starfield simulation
 2. menger-sponge - display a 3d model of a menger sponge
-3. snake-game - play a game of snake (TODO)
+3. snake-game - play a game of snake
 4. purple-rain - display some rain (TODO)
 5. space-invaders - play a game of space invaders (TODO)
 6. mitosis-simulation - show a mitosis (cell division) simulation (TODO)
