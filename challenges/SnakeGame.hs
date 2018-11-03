@@ -47,32 +47,24 @@ newBlock snk = do
                 let pts = zip (Set.toList rem) (repeat 1)
                 Rand.getStdRandom $ MRand.runRand (MRand.fromList pts) 
 
-
 newState :: IO State 
 newState = do 
           let snk = Block (quot blocksWide 2,quot blocksHigh 2)
           tgt <- newBlock [snk]
           return $ State Start (Snake [snk]) DirLeft (Target tgt) 
 
-
 tickState :: State -> IO State 
-tickState (State InPlay snk d tgt) = if collide snk d tgt then 
-                            do
-                                let bsnk = growSnake snk (next d snk)
-                                let (Snake blks) = bsnk
-                                tgt2 <- newBlock blks
-                                return $ State InPlay bsnk d (Target tgt2)
-                        else 
-                            if defeat snk d then
-                                return $ State Loss snk d tgt 
-                            else 
-                                if victory snk then 
-                                    return $ State Victory snk d tgt
-                                else 
-                                    return $ State InPlay (moveSnake snk (next d snk)) d tgt 
+tickState (State InPlay snk d tgt) 
+    | collide snk d tgt = do
+                let bsnk = growSnake snk (next d snk)
+                let (Snake blks) = bsnk
+                tgt2 <- newBlock blks
+                return $ State InPlay bsnk d (Target tgt2)
+    | defeat snk d = return $ State Loss snk d tgt
+    | victory snk = return $ State Victory snk d tgt
+    | otherwise = return $ State InPlay (moveSnake snk (next d snk)) d tgt
+
 tickState (State a snk d tgt) = return $ State a snk d tgt
-
-
 
 eventState :: Event -> State -> IO State 
 eventState (EventKey (SpecialKey KeyDown) Down  _ _) (State InPlay snk dir tgt) = return $ State InPlay snk DirDown tgt 
@@ -102,7 +94,6 @@ drawSnake (Snake blks) = color white $ pictures $ fmap drawBlock blks
 drawTarget :: Target -> Picture 
 drawTarget (Target blk) = color red $ drawBlock blk 
 
-
 drawBoard :: State -> Picture 
 drawBoard (State _ snk _ tgt) = translate (-(fromIntegral width)/2 + 5) (-(fromIntegral height)/2 + 5) $ pictures [drawSnake snk,drawTarget tgt]
 
@@ -121,7 +112,6 @@ drawState (State Start _ _ _) = draw2start
 drawState (State Victory snk d tgt) = pictures [drawBoard (State Victory snk d tgt), drawVictory]
 drawState (State Loss snk d tgt) = pictures [drawBoard (State Loss snk d tgt), drawDefeat]
 
-
 disp :: Display
 disp = InWindow "Snake Game" (width,height) (10,10)
 
@@ -129,4 +119,3 @@ main :: IO ()
 main = do 
     st <- newState
     playIO disp black 10 st (return.drawState) eventState (\ _ s -> tickState s)
-                               
