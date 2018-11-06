@@ -38,8 +38,10 @@ packages:
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)
 extra-deps: 
-  - gloss-juicy-0.2.2@sha256:9b001284579fca311f8775442bf284bfde66791ae98098bd96b227af31e815b6
-# Override default flag values for local packages and extra-deps
+  - gloss-1.13.0.1@sha256:3015998c5a46fbd2ca8702be6fb97d4bec8e75108ce07f88f1935a168918cfdb
+  - gloss-rendering-1.13.0.2@sha256:30e26a42cf1cd8d96ae605fd51e533d20e0a53c09536d63c59f2759f11fba764
+#gloss-juicy-0.2.3@sha256:0fa81d5e0da3e1c939cd462d4852709444c95966b6d82a05e0da29246830de88, gloss-juicy-0.2.3@sha256:0c3bca95237cbf91f8b3b1936a0661f1e0457acd80502276d54d6c5210f88b25
+  # Override default flag values for local packages and extra-deps
 # flags: {}
 
 # Extra package databases containing global packages
