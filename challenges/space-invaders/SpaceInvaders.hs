@@ -14,4 +14,4 @@ disp = InWindow "Space Invaders" (400,400) (10,10)
 
 
 main :: IO ()
-main = animate disp black (\x -> color (dark green) $ basic (10,10) 0.25 x)
+main = animate disp black (\x -> color (dark green) $ block (10,10) 0.25 x)

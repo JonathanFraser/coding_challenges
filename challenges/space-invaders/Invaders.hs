@@ -79,3 +79,26 @@ spear2 = [
     ]
 
 spear = animateSprites [spear1,spear2]
+
+
+block1 = [
+    [B,B,B,B,F,F,F,F,B,B,B,B],
+    [B,F,F,F,F,F,F,F,F,F,F,B],
+    [F,F,F,F,F,F,F,F,F,F,F,F],
+    [F,F,F,F,F,F,F,F,F,F,F,F],
+    [B,B,B,F,F,F,F,F,F,B,B,B],
+    [B,B,F,B,B,F,F,B,B,F,B,B],
+    [B,B,B,F,B,B,B,B,F,B,B,B]
+    ]
+
+block2 = [
+    [B,B,B,B,F,F,F,F,B,B,B,B],
+    [B,F,F,F,F,F,F,F,F,F,F,B],
+    [F,F,F,F,F,F,F,F,F,F,F,F],
+    [F,F,F,F,F,F,F,F,F,F,F,F],
+    [B,B,B,F,F,F,F,F,F,B,B,B],
+    [B,B,F,F,B,F,F,B,F,F,B,B],
+    [F,F,B,B,B,B,B,B,B,B,F,F]
+    ]
+
+block = animateSprites [block1,block2]
