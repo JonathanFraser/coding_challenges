@@ -59,8 +59,8 @@ basic = animateSprites [basic1,basic2]
 spear1 = [
     [B,B,B,F,F,B,B,B],
     [B,B,F,F,F,F,B,B],
-    [B,F,F,F,F,F,F,B],
-    [F,F,F,F,F,F,F,F],
+    [B,F,B,F,F,B,F,B],
+    [F,F,B,F,F,B,F,F],
     [F,F,F,F,F,F,F,F],
     [B,B,F,F,F,F,B,B],
     [B,F,F,F,F,F,F,B],
@@ -70,8 +70,8 @@ spear1 = [
 spear2 = [
     [B,B,B,F,F,B,B,B],
     [B,B,F,F,F,F,B,B],
-    [B,F,F,F,F,F,F,B],
-    [F,F,F,F,F,F,F,F],
+    [B,F,B,F,F,B,F,B],
+    [F,F,B,F,F,B,F,F],
     [F,F,F,F,F,F,F,F],
     [B,B,F,B,B,F,B,B],
     [B,F,B,B,B,B,F,B],

@@ -33,7 +33,15 @@ resolver: lts-12.14
 #  - auto-update
 #  - wai
 packages:
-- .
+- ./challenges/star-field
+- ./challenges/menger-sponge
+- ./challenges/snake-game
+- ./challenges/purple-rain
+- ./challenges/space-invaders
+- ./challenges/quad-tree
+- ./challenges/barnsley-fern
+
+
 # Dependency packages to be pulled from upstream that are not in the resolver
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)
