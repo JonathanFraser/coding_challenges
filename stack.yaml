@@ -38,6 +38,7 @@ packages:
 - ./challenges/snake-game
 - ./challenges/purple-rain
 - ./challenges/space-invaders
+- ./challenges/planet-sim
 - ./challenges/fractal-tree
 - ./challenges/quad-tree
 - ./challenges/barnsley-fern

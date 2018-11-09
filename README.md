@@ -20,6 +20,7 @@ stack exec challenge-name
 4. purple-rain - display some rain
 5. space-invaders - play a game of space invaders (TODO)
 6. mitosis-simulation - show a mitosis (cell division) simulation (TODO)
+7. planetsim-part1 - create a simple 2D planetary simulator
 14. fractal-tree - display a fractally generated tree
 98. quadtree-part1 - initial tests of a quad tree implimentation
 99. quadtree-part2 - display quadtree pulls 
