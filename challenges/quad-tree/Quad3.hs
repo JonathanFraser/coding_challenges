@@ -5,22 +5,39 @@ import System.Random
 import Control.Monad.Random
 import qualified QuadTree as QT
 
-data P = P Point deriving (Show,Ord,Eq)
+data P = P Int Point deriving (Show)
+
+instance Eq P where 
+    (==) (P i _) (P j _) = i == j 
+
+instance Ord P where 
+    (<) (P i _) (P j _) = i < j
 
 instance QT.At P where 
-    at (P p) = p 
+    at (P _ p) = p 
+
+setId:: P -> Int -> P 
+setId (P _ s) i = P i s
+
+ident :: P -> Int 
+ident (P i s) = i 
 
 instance Random P where 
-    randomR (P (x1,y1),P (x2,y2)) g = (P (x,y),g2) 
+    randomR (P i (x1,y1),P j (x2,y2)) g = (P k (x,y),g3) 
                         where 
                             (x,g1) = randomR (x1,x2) g
-                            (y,g2) = randomR (y1,y2) g1  
+                            (y,g2) = randomR (y1,y2) g1
+                            (k, g3) = randomR (i,j) g2 
+                            
 
 width = 400
 height = 400 
 
 scatterInit :: Int -> QT.Rect -> IO [P]
-scatterInit n (tl,br) = sequence $ take n $ repeat $ getStdRandom $ randomR (P tl,P br)
+scatterInit n (tl,br) = do 
+            ps <- sequence $ take n $ repeat $ getStdRandom $ randomR (P 0 tl,P 0 br)
+            let res = zipWith setId ps [0..]
+            return res 
 
 drawRect :: QT.Rect -> Picture 
 drawRect ((x1,y1),(x2,y2)) = translate ((x1+x2)/2) ((y1+y2)/2) $ rectangleWire (x2-x1) (y2-y1)
@@ -28,16 +45,16 @@ drawRect ((x1,y1),(x2,y2)) = translate ((x1+x2)/2) ((y1+y2)/2) $ rectangleWire (
 radius = 5
 
 dist :: P -> P -> Float
-dist (P (x1,y1)) (P (x2,y2)) = sqrt $ (x1-x2)**2 + (y1-y2)**2
+dist (P _ (x1,y1)) (P _ (x2,y2)) = sqrt $ (x1-x2)**2 + (y1-y2)**2
 
 drawP :: P -> Picture 
-drawP (P (x,y)) = translate x y $ circleSolid radius
+drawP (P _ (x,y)) = translate x y $ circleSolid radius
 
 collide :: QT.QuadTree P -> P -> Bool 
-collide tree (P (x,y)) = length lens > 1
+collide tree (P i (x,y)) = length lens /= 0
                         where 
                          candidates = QT.get tree ((x-radius-1,y+radius+1),(x+radius+1,y-radius-1)) :: [P]
-                         ds = fmap (dist (P (x,y))) candidates 
+                         ds = fmap (dist (P i (x,y))) $ filter (\p -> p /= (P i (x,y)))candidates 
                          lens = filter (\d -> d < 2*radius) ds
 
 draw:: QT.Rect -> [P] -> IO Picture
@@ -53,7 +70,7 @@ draw treebox pts = do
 
 
 add :: P -> P -> P 
-add (P (x1,y1)) (P (x2,y2)) = P (x1+x2,y1+y2)
+add (P i (x1,y1)) (P _ (x2,y2)) = P i (x1+x2,y1+y2)
 
 jitter = ((-1,1),(1,-1))
 
