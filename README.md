@@ -22,8 +22,10 @@ stack exec challenge-name
 6. mitosis-simulation - show a mitosis (cell division) simulation (TODO)
 7. planetsim-part1 - create a simple 2D planetary simulator
 14. fractal-tree - display a fractally generated tree
+71. minesweeper - a minesweeper clone
 98. quadtree-part1 - initial tests of a quad tree implimentation
 99. quadtree-part2 - display quadtree pulls 
 100. quadtree-part3 - use quadtree for collision detection
 108. barnsly-fern - display a barnsly fern fractal
+129. koch-snowflake - display a koch fractal
 
